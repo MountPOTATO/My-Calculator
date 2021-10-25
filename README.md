@@ -12,7 +12,7 @@ Tongji Univ. SSE IOS Application Development Assignment I (SwiftUI)
 
 ## UI Interface overview
 
-<img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_16-49-43.png" alt="Snipaste_2021-10-25_16-49-43" style="zoom: 33%;" /><img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_16-50-01.png" alt="Snipaste_2021-10-25_16-50-01" style="zoom: 33%;" />
+<img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_16-49-43.png" alt="Snipaste_2021-10-25_16-49-43" style="zoom: 15%;" /><img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_16-50-01.png" alt="Snipaste_2021-10-25_16-50-01" style="zoom: 15%;" />
 
 This calculator app provides different UI color scheme for both IOS's light and dark theme. 
 
@@ -21,7 +21,8 @@ This calculator app provides different UI color scheme for both IOS's light and 
 + developed under MVVM framework
 + View auto-layout adapts to different IOS devices (iPhone 8+ , iPad)
 + supports device orientation
-	<img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_22-45-55.png" alt="Snipaste_2021-10-25_22-45-55" style="zoom: 25%;" />
+<img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_22-45-55.png" alt="Snipaste_2021-10-25_22-45-55" style="zoom: 15%;" />
 + simple calculation function
 + illegal expression warning, occurs when the "=" button is pressed while the expression is in an invalid format.
-	<img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_22-46-57.png" alt="Snipaste_2021-10-25_22-46-57" style="zoom: 40%;" />
+
+<img src="https://gitee.com/mount-potato/markdown-img-hosting/raw/master/pic/Snipaste_2021-10-25_22-46-57.png" alt="Snipaste_2021-10-25_22-46-57" style="zoom: 15%;" />
