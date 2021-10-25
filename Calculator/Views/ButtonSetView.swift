@@ -12,7 +12,6 @@ struct ButtonSetView: View{
     
     @ObservedObject var viewModel: CalculatorViewModel
     
-    let geometry: GeometryProxy
     
     struct BaseButtonView: View {
         
@@ -20,54 +19,74 @@ struct ButtonSetView: View{
         let buttonColor: Color
         let fontColor: Color
         let borderColor: Color
-        let width: CGFloat
-        let height: CGFloat
+
+        
+        let radius: CGFloat = 20
         
         var body: some View {
+            
+            
+            GeometryReader{ geo in
+            
 
-            ZStack{
                 Text(text)
-                    .fontWeight(.heavy)
-                    .font(.title)
-                    .frame(width: width, height: height, alignment:.center)
-                    .padding() //以background修饰器建立背景搭配间距的按钮
+                    .fontWeight(.bold)
+                    .font(.system(.largeTitle, design: .rounded))
+                    .padding()
+                    .frame(width:geo.size.width,
+                           height:geo.size.height,
+                           alignment:.center)
+                    //以background修饰器建立背景搭配间距的按钮
                     .background(buttonColor) //背景颜色为按钮主色调
-                    .cornerRadius(40)
+                    .cornerRadius(radius)
                     .foregroundColor(fontColor) //字体颜色前景色调
-                    //.font(.system(size: size/3))
-                    .padding(10)    //结合border在按钮周围加上间距
+
                     .overlay(
-                            RoundedRectangle(cornerRadius: 40)
-                                .stroke(borderColor, lineWidth: 5)
+                        RoundedRectangle(cornerRadius: radius)
+                            .stroke(fontColor, lineWidth: 5)
                         )
                     .scaledToFit()
-                    .minimumScaleFactor(0.05)
-                    
-                    
+                    .minimumScaleFactor(0.5)
+                
+
             }
-            .alignmentGuide(VerticalAlignment.center, computeValue: { $0[.bottom]
-            })
+            .background(buttonColor) //背景颜色为按钮主色调
+            .cornerRadius(radius)
+
+            
+
+            
         }
+        
     }
 
     struct NumberButton: View{
         
         let number: Double
-        let width: CGFloat
-        let height: CGFloat
+
         let viewModel: CalculatorViewModel
+        
+        @Environment(\.colorScheme) var colorScheme
         
         var body: some View{
             Button(action: {
                 viewModel.calculateClicked(on: String(Int(number)))
     
             }, label: {
-                BaseButtonView(text: String(Int(number)),
-                               buttonColor: Color.red,
-                               fontColor: Color.white,
-                               borderColor: Color.red,
-                               width: width,
-                               height: height)
+                
+                if colorScheme == .light {
+                    BaseButtonView(text: String(Int(number)),
+                                   buttonColor: Color.gray,
+                                   fontColor: Color.black,
+                                   borderColor: Color.gray)
+                }else{
+                    BaseButtonView(text: String(Int(number)),
+                                   buttonColor: Color.red,
+                                   fontColor: Color.white,
+                                   borderColor: Color.red)
+                }
+                
+
                 
             })
         }
@@ -76,15 +95,23 @@ struct ButtonSetView: View{
 
     struct OperatorButton: View{
         
+        // 按下等于号时如果计算错误时的报警，弹出警告窗格
+        @State private var showingAlert = false
+        
         let operatorMark: String
-        let width: CGFloat
-        let height: CGFloat
+        
         let viewModel: CalculatorViewModel
+        
+        @Environment(\.colorScheme) var colorScheme
         
         var body: some View{
             Button(action: {
                 if operatorMark == "=" {
-                    viewModel.equalClicked()
+                    if(viewModel.equalClicked()==false){
+                        
+                        self.showingAlert = true
+                        
+                    }
                 }
                 else if operatorMark == "C"{
                     viewModel.clearClicked()
@@ -93,96 +120,97 @@ struct ButtonSetView: View{
                     viewModel.calculateClicked(on: operatorMark)
                 }
             }, label: {
-                BaseButtonView(text: operatorMark,
-                               buttonColor: Color.gray,
-                               fontColor: Color.white,
-                               borderColor: Color.gray,
-                               width: width,
-                               height: height)
+                
+                if colorScheme == .light{
+                    BaseButtonView(text: operatorMark,
+                                   buttonColor: Color.blue,
+                                   fontColor: Color.black,
+                                   borderColor: Color.blue)
+                }else{
+                    BaseButtonView(text: operatorMark,
+                                   buttonColor: Color.gray,
+                                   fontColor: Color.white,
+                                   borderColor: Color.gray)
+                }
             })
+            .alert(isPresented: $showingAlert) {
+                Alert(title: Text("Calculation Error"),
+                      message: Text("Present expression is illegal, please examine your input."),
+                      dismissButton: .default(Text("OK")))
+            }
            
         }
     }
 
 
-    struct SquareNumberButton: View{
-        let number: Double
-        let size: CGFloat
-        let viewModel: CalculatorViewModel
-        var body: some View{
-            NumberButton(number: number, width: size, height: size,viewModel: viewModel)
-        }
-    }
-
-
-    struct SquareOperatorButton: View{
-        let operatorMark: String
-        let size: CGFloat
-        let viewModel: CalculatorViewModel
-        
-        var body: some View{
-            OperatorButton(operatorMark: operatorMark,
-                           width: size,
-                           height: size,
-                           viewModel: viewModel)
-        }
-    }
-
+    
 
     
     var body: some View{
         
-
-        
-        let size:CGFloat = geometry.size.width/14
-        
-
-        ZStack{
+    
+        ZStack(alignment: .leading){
             
-            VStack{
-                HStack{
-                    SquareOperatorButton(operatorMark: "sin", size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "cos", size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "tan", size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "e", size: size, viewModel: viewModel)
+            VStack(alignment: .leading){
+                HStack(){
+                    OperatorButton(operatorMark: "sin", viewModel: viewModel)
+                    OperatorButton(operatorMark: "cos", viewModel: viewModel)
+                    OperatorButton(operatorMark: "tan", viewModel: viewModel)
+                    OperatorButton(operatorMark: "e", viewModel: viewModel)
                     
                 }
                 HStack{
-                    SquareOperatorButton(operatorMark: "C", size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "(", size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: ")", size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "+", size: size, viewModel: viewModel)
+                    OperatorButton(operatorMark: "C", viewModel: viewModel)
+                    OperatorButton(operatorMark: "(", viewModel: viewModel)
+                    OperatorButton(operatorMark: ")", viewModel: viewModel)
+                    OperatorButton(operatorMark: "+", viewModel: viewModel)
                     
                 }
                 HStack{
-                    SquareNumberButton(number: 7, size: size, viewModel: viewModel)
-                    SquareNumberButton(number: 8, size: size, viewModel: viewModel)
-                    SquareNumberButton(number: 9, size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "-", size: size, viewModel: viewModel)
+                    NumberButton(number: 7, viewModel: viewModel)
+                    NumberButton(number: 8, viewModel: viewModel)
+                    NumberButton(number: 9, viewModel: viewModel)
+                    OperatorButton(operatorMark: "-", viewModel: viewModel)
                 }
                 HStack{
-                    SquareNumberButton(number: 4, size: size, viewModel: viewModel)
-                    SquareNumberButton(number: 5, size: size, viewModel: viewModel)
-                    SquareNumberButton(number: 6, size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "×", size: size, viewModel: viewModel)
+                    NumberButton(number: 4, viewModel: viewModel)
+                    NumberButton(number: 5, viewModel: viewModel)
+                    NumberButton(number: 6, viewModel: viewModel)
+                    OperatorButton(operatorMark: "×", viewModel: viewModel)
                 }
                 HStack{
-                    SquareNumberButton(number: 1, size: size, viewModel: viewModel)
-                    SquareNumberButton(number: 2, size: size, viewModel: viewModel)
-                    SquareNumberButton(number: 3, size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "÷", size: size, viewModel: viewModel)
+                    NumberButton(number: 1, viewModel: viewModel)
+                    NumberButton(number: 2, viewModel: viewModel)
+                    NumberButton(number: 3, viewModel: viewModel)
+                    OperatorButton(operatorMark: "÷", viewModel: viewModel)
                 }
                 HStack{
-                    NumberButton(number: 0, width: size*4.3, height: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: ".", size: size, viewModel: viewModel)
-                    SquareOperatorButton(operatorMark: "=", size: size, viewModel: viewModel)
+                    VStack{
+                        NumberButton(number: 0, viewModel: viewModel)
+                    }
+                    HStack{
+                        OperatorButton(operatorMark: ".", viewModel: viewModel)
+                        OperatorButton(operatorMark: "=", viewModel: viewModel)
+                    }
+                   
                 }
             }
         }
-        .padding(.horizontal)
         .frame(alignment:.center)
+        .padding()
 
         
     }
 }
 
+struct ButtonSetView_Previews: PreviewProvider {
+    static var previews: some View {
+        let game = CalculatorViewModel()
+        Group {
+            ContentView(gameViewModel: game)
+
+            ContentView(gameViewModel: game)
+                .preferredColorScheme(.dark)
+        }
+    }
+}

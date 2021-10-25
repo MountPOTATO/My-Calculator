@@ -31,10 +31,13 @@ class CalculatorViewModel: ObservableObject{
         model.updateExpression(with: buttonContent)
     }
     
-    func equalClicked(){
+    func equalClicked()->Bool{
         if model.runCalculation()==false{
             //TODO:错误处理
+            return false
             
+        }else{
+            return true
         }
     }
     

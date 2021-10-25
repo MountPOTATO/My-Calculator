@@ -10,45 +10,69 @@ import SwiftUI
 
 
 
-struct ScreenView: View{
+struct ExpressionView: View{
 
     @ObservedObject var viewModel: CalculatorViewModel
     
-    let geometry: GeometryProxy
+
+    // 获取当前设备的主题色，以配置亮色和暗色主题下不同的计算器外观
+    @Environment(\.colorScheme) var colorScheme
     
-    //TODO:添加动画
 
     var body: some View {
         
-            
-        let height = geometry.size.height
-        let width = geometry.size.width
         
-        ScrollView(.horizontal){
-            
-            HStack{
+        if colorScheme == .light{
+            VStack{
         
                 if viewModel.expression == ""{
                     Text("input here...")
-                        .font(.system(size:50))
-                        .foregroundColor(.gray)
+                        .font(.system(.largeTitle, design: .rounded))
+                        .foregroundColor(Color(hue: 1.0, saturation: 0.22, brightness: 0.343))
                         .opacity(0.7)
-                        .padding(.bottom, height/6)
-                        .frame(width: width)
+
                 }
                 
                 else{
 
                     Text(self.viewModel.expression)
-                        .font(.system(size:50))
-                        .padding(.bottom, height/6)
-                        .frame(width: geometry.size.width)
+                        .font(.system(.largeTitle, design: .rounded))
+                    
+                    }
+            }
+        }else{
+            VStack{
+            
+                if viewModel.expression == ""{
+                    Text("input here...")
+                        .font(.system(.largeTitle, design: .rounded))
+                        .foregroundColor(Color(hue: 1.0, saturation: 0.051, brightness: 0.929))
+                        .opacity(0.7)
+
+                }
+                
+                else{
+
+                    Text(self.viewModel.expression)
+                        .font(.system(.largeTitle, design: .rounded))
                     
                 }
             }
-
         }
             
     }
 }
+
+
+struct ExpressionView_Previews: PreviewProvider {
+    static var previews: some View {
+        let game = CalculatorViewModel()
+        Group {
+            ContentView(gameViewModel: game)
+            ContentView(gameViewModel: game)
+                .preferredColorScheme(.dark)
+        }
+    }
+}
+
 
